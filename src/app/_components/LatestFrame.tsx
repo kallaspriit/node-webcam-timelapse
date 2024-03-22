@@ -29,7 +29,7 @@ export const LatestFrame: FC = () => {
   }, 1000);
 
   return (
-    <div className="relative aspect-[1920/1080] flex-1 overflow-hidden rounded-xl bg-black outline outline-2 outline-white/50">
+    <div className="relative aspect-[1920/1080] flex-1 overflow-hidden rounded-xl bg-black shadow-lg outline outline-4 outline-white/50">
       {/* Bottom image */}
       <img
         key={`bottom-${bottomKey}`}

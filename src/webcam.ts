@@ -27,9 +27,9 @@ export function startWebcamCapture() {
 
   // options used to calculate appopriate capture interval
   const captureOptions: GetCaptureIntervalOptions = {
-    sequenceDurationSeconds: 24 * 60 * 60, // 24 hours
-    outputDurationDurationSeconds: 10, // maps to 10 seconds
-    fps: 60, // given 60 frames per second
+    sequenceDurationSeconds: 24 * 60 * 60, // this amount of time
+    outputDurationDurationSeconds: 60, // maps to this many seconds
+    fps: 60, // given this many frames per second
   };
 
   // calculate the capture interval based on the capture options
@@ -89,21 +89,21 @@ export function startWebcamCapture() {
   };
 
   // updates just the last frame file, this is called more often to provide live view
-  const updateLastFrame = () => {
-    const projectPath = join(__dirname, "..", "..");
-    const publicDirectory = join(projectPath, "public");
-    const lastFramePath = join(publicDirectory, "last.jpg");
+  // const updateLastFrame = () => {
+  //   const projectPath = join(__dirname, "..", "..");
+  //   const publicDirectory = join(projectPath, "public");
+  //   const lastFramePath = join(publicDirectory, "last.jpg");
 
-    // capture to last frame file
-    webcam.capture(lastFramePath, (error, _capturedFilePath) => {
-      // handle error
-      if (error) {
-        console.error("Capturing last frame failed", error, _capturedFilePath);
+  //   // capture to last frame file
+  //   webcam.capture(lastFramePath, (error, _capturedFilePath) => {
+  //     // handle error
+  //     if (error) {
+  //       console.error("Capturing last frame failed", error, _capturedFilePath);
 
-        return;
-      }
-    });
-  };
+  //       return;
+  //     }
+  //   });
+  // };
 
   // log the capture settings
   console.log("\n-- Starting webcam capture --");
@@ -124,7 +124,7 @@ export function startWebcamCapture() {
 
   // TODO: ideally only do this if the web ui is open
   // update the last frame more often to provide a live view
-  setInterval(updateLastFrame, 1000);
+  // setInterval(updateLastFrame, 1000);
 
   // capture the first frame immediately
   captureFrame();
