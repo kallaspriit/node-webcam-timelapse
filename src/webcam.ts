@@ -2,14 +2,22 @@ import { type WebcamOptions, create } from "node-webcam";
 import { copyFile } from "fs/promises";
 import { join } from "path";
 import { getFlashDrivePath } from "./util/getFlashDrivePath";
+import { formatDate } from "./util/formatDate";
+import { ensurePathExists } from "./util/ensurePathExists";
+import {
+  type GetCaptureIntervalOptions,
+  getCaptureInterval,
+} from "./util/getCaptureInterval";
+import { formatDuration } from "./util/formatDuration";
 
 export function startWebcamCapture() {
-  const options: WebcamOptions = {
+  // options used to capture the webcam
+  const webcamOptions: WebcamOptions = {
     width: 1920,
     height: 1080,
     quality: 90,
     output: "jpeg",
-    callbackReturn: "location",
+    // callbackReturn: "location",
     // frames: 60,
     // delay: 0,
     // saveShots: true,
@@ -17,44 +25,107 @@ export function startWebcamCapture() {
     // verbose: false,
   };
 
-  console.log("starting webcam capture");
+  // options used to calculate appopriate capture interval
+  const captureOptions: GetCaptureIntervalOptions = {
+    sequenceDurationSeconds: 24 * 60 * 60, // 24 hours
+    outputDurationDurationSeconds: 10, // maps to 10 seconds
+    fps: 60, // given 60 frames per second
+  };
+
+  // calculate the capture interval based on the capture options
+  const captureInterval = getCaptureInterval(captureOptions);
 
   // create webcam
-  const webcam = create(options);
+  const webcam = create(webcamOptions);
 
   const flashDrivePath = getFlashDrivePath();
 
   // prefer flash drive but fallback to local directory
   const projectPath = join(__dirname, "..", "..");
-  const captureDirectory =
-    flashDrivePath ?? join(projectPath, `public/capture`);
-  const publicCaptureDirectory = join(projectPath, `public`);
+  const publicDirectory = join(projectPath, "public");
+  const lastFramePath = join(publicDirectory, "last.jpg");
 
-  console.log(`Capture images are stored in '${captureDirectory}'`);
+  // captures a frame and stores it in the capture directory and last frame
+  const captureFrame = () => {
+    const currentTime = new Date();
+    const currentDatePath = formatDate(currentTime);
+    const localCaptureDirectory = join(
+      projectPath,
+      "public",
+      "capture",
+      currentDatePath,
+    );
+    const captureDirectory = flashDrivePath
+      ? join(flashDrivePath, currentDatePath)
+      : localCaptureDirectory;
 
-  // capture an image at interval
-  setInterval(() => {
-    const currentDate = new Date();
+    // create the capture path if needed (includes current date that changes)
+    ensurePathExists(captureDirectory);
 
-    const filename = `${currentDate.toISOString()}.jpg`;
+    const filename = `${currentTime.toISOString()}.jpg`;
     const captureFilePath = join(captureDirectory, filename);
-    const lastFramePath = join(publicCaptureDirectory, "last.jpg");
 
     // capture to last frame file
     webcam.capture(lastFramePath, (error, _capturedFilePath) => {
       // handle error
       if (error) {
-        console.log("capturing failed", error, _capturedFilePath);
+        console.error("Capturing failed", error, _capturedFilePath);
 
         return;
       }
 
-      console.log("captured frame", captureFilePath);
+      console.log(
+        `Captured frame '${captureFilePath}', next in ${formatDuration(captureInterval / 1000)}`,
+      );
 
       // copy the last frame onto capture directory (prefer flash drive)
       copyFile(lastFramePath, captureFilePath).catch((error) => {
-        console.error("copying last frame file failed", error);
+        console.error(
+          `Copying last to '${captureFilePath}' frame file failed`,
+          error,
+        );
       });
     });
-  }, 5000);
+  };
+
+  // updates just the last frame file, this is called more often to provide live view
+  const updateLastFrame = () => {
+    const projectPath = join(__dirname, "..", "..");
+    const publicDirectory = join(projectPath, "public");
+    const lastFramePath = join(publicDirectory, "last.jpg");
+
+    // capture to last frame file
+    webcam.capture(lastFramePath, (error, _capturedFilePath) => {
+      // handle error
+      if (error) {
+        console.error("Capturing last frame failed", error, _capturedFilePath);
+
+        return;
+      }
+    });
+  };
+
+  // log the capture settings
+  console.log("\n-- Starting webcam capture --");
+  console.log(
+    `- sequence duration: ${formatDuration(captureOptions.sequenceDurationSeconds)}`,
+  );
+  console.log(
+    `- output duration: ${formatDuration(captureOptions.outputDurationDurationSeconds)}`,
+  );
+  console.log(`- capture interval: ${formatDuration(captureInterval / 1000)}`);
+  console.log(
+    `- images per sequence: ${Math.round(captureOptions.outputDurationDurationSeconds * captureOptions.fps)}`,
+  );
+  console.log(`- last frame is stored in '${lastFramePath}'\n`);
+
+  // capture an image at interval
+  setInterval(captureFrame, captureInterval);
+
+  // TODO: ideally only do this if the web ui is open
+  // update the last frame more often to provide a live view
+  setInterval(updateLastFrame, 1000);
+
+  // capture the first frame immediately
+  captureFrame();
 }
