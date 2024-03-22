@@ -38,7 +38,7 @@ export const LatestFrame: FC = () => {
           "z-10": imageIndex === 0,
         })}
         title={`Bottom capture #${bottomKey}`}
-        src={`/capture/last.jpg?bottom-${bottomKey}`}
+        src={`/last.jpg?bottom-${bottomKey}`}
         alt="Latest captured frame"
       />
 
@@ -50,13 +50,15 @@ export const LatestFrame: FC = () => {
           "z-10": imageIndex === 1,
         })}
         title={`Top capture #${topKey}`}
-        src={`/capture/last.jpg?top-${topKey}`}
+        src={`/last.jpg?top-${topKey}`}
         alt="Latest captured frame"
       />
 
       {/* Show current time */}
       <div className="absolute inset-0 z-20 px-5 py-3">
-        <div suppressHydrationWarning>{new Date().toLocaleTimeString()}</div>
+        <div suppressHydrationWarning className="font-mono">
+          {new Date().toLocaleTimeString()}
+        </div>
       </div>
     </div>
   );

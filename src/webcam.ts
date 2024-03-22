@@ -1,6 +1,7 @@
 import { type WebcamOptions, create } from "node-webcam";
 import { copyFile } from "fs/promises";
 import { join } from "path";
+import { getFlashDrivePath } from "./util/getFlashDrivePath";
 
 export function startWebcamCapture() {
   const options: WebcamOptions = {
@@ -12,7 +13,7 @@ export function startWebcamCapture() {
     // frames: 60,
     // delay: 0,
     // saveShots: true,
-    // device: false,
+    // device: "/dev/video0",
     // verbose: false,
   };
 
@@ -21,19 +22,28 @@ export function startWebcamCapture() {
   // create webcam
   const webcam = create(options);
 
-  // TODO: store and serve from USB stick
-  const captureDirectory = `public/capture`;
-  const publicCaptureDirectory = `public/capture`;
+  const flashDrivePath = getFlashDrivePath();
 
-  // capture an image every second
+  // prefer flash drive but fallback to local directory
+  const projectPath = join(__dirname, "..", "..", `public`);
+  const captureDirectory =
+    flashDrivePath ?? join(projectPath, `public/capture`);
+  const publicCaptureDirectory = join(projectPath, `public`);
+
+  console.log(`Capture images are stored in '${captureDirectory}'`);
+
+  // capture an image at interval
   setInterval(() => {
     const currentDate = new Date();
 
     const filename = `${currentDate.toISOString()}.jpg`;
-    const filePath = join(captureDirectory, filename);
+    const captureFilePath = join(captureDirectory, filename);
     const lastFramePath = join(publicCaptureDirectory, "last.jpg");
 
-    webcam.capture(join(captureDirectory, filename), (error, data) => {
+    console.log("capturing to", lastFramePath);
+
+    // capture to last frame file
+    webcam.capture(lastFramePath, (error, data) => {
       // handle error
       if (error) {
         console.log("capturing failed", error, data);
@@ -41,10 +51,12 @@ export function startWebcamCapture() {
         return;
       }
 
-      // copy the last frame into a separate file with a known name
-      copyFile(filePath, lastFramePath).catch((error) => {
+      console.log("captured frame", captureFilePath, data);
+
+      // copy the last frame onto capture directory (prefer flash drive)
+      copyFile(lastFramePath, captureFilePath).catch((error) => {
         console.error("copying last frame file failed", error);
       });
     });
-  }, 1000);
+  }, 5000);
 }

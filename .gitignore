@@ -5,6 +5,7 @@
 /.pnp
 /src/temp
 /public/capture
+/public/last.jpg
 .pnp.js
 
 # testing
