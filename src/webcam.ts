@@ -25,7 +25,7 @@ export function startWebcamCapture() {
   const flashDrivePath = getFlashDrivePath();
 
   // prefer flash drive but fallback to local directory
-  const projectPath = join(__dirname, "..", "..", `public`);
+  const projectPath = join(__dirname, "..", "..");
   const captureDirectory =
     flashDrivePath ?? join(projectPath, `public/capture`);
   const publicCaptureDirectory = join(projectPath, `public`);
@@ -40,18 +40,16 @@ export function startWebcamCapture() {
     const captureFilePath = join(captureDirectory, filename);
     const lastFramePath = join(publicCaptureDirectory, "last.jpg");
 
-    console.log("capturing to", lastFramePath);
-
     // capture to last frame file
-    webcam.capture(lastFramePath, (error, data) => {
+    webcam.capture(lastFramePath, (error, _capturedFilePath) => {
       // handle error
       if (error) {
-        console.log("capturing failed", error, data);
+        console.log("capturing failed", error, _capturedFilePath);
 
         return;
       }
 
-      console.log("captured frame", captureFilePath, data);
+      console.log("captured frame", captureFilePath);
 
       // copy the last frame onto capture directory (prefer flash drive)
       copyFile(lastFramePath, captureFilePath).catch((error) => {
