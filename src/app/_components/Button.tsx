@@ -14,9 +14,9 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={cx(
-        "rounded-sm border px-4 py-2",
-        !secondary && "border-slate-500 bg-slate-500",
-        secondary && "border-slate-500 bg-transparent",
+        "rounded-md border px-4 py-2 text-white",
+        !secondary && "border-sky-600 bg-sky-600",
+        secondary && "border-sky-600 bg-transparent text-sky-600",
         className,
       )}
       {...rest}

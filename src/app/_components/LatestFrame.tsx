@@ -29,11 +29,11 @@ export const LatestFrame: FC = () => {
   }, 1000);
 
   return (
-    <div className="relative aspect-[1920/1080] flex-1 bg-black">
+    <div className="relative aspect-[1920/1080] flex-1 overflow-hidden rounded-xl bg-black outline outline-2 outline-white/50">
       {/* Bottom image */}
       <img
         key={`bottom-${bottomKey}`}
-        className={cx("absolute inset-0", {
+        className={cx("absolute inset-0 rounded-xl", {
           "z-0": imageIndex === 1,
           "z-10": imageIndex === 0,
         })}
@@ -45,7 +45,7 @@ export const LatestFrame: FC = () => {
       {/* Top image */}
       <img
         key={`top-${topKey}`}
-        className={cx("absolute inset-0", {
+        className={cx("absolute inset-0 rounded-xl", {
           "z-0": imageIndex === 0,
           "z-10": imageIndex === 1,
         })}
