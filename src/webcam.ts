@@ -1,4 +1,6 @@
 import { type WebcamOptions, create } from "node-webcam";
+import { copyFile } from "fs/promises";
+import { join } from "path";
 
 export function startWebcamCapture() {
   const options: WebcamOptions = {
@@ -19,11 +21,30 @@ export function startWebcamCapture() {
   // create webcam
   const webcam = create(options);
 
-  setInterval(() => {
-    console.log("capture");
+  // TODO: store and serve from USB stick
+  const captureDirectory = `public/capture`;
+  const publicCaptureDirectory = `public/capture`;
 
-    webcam.capture("public/capture.jpg", (err, data) => {
-      console.log(err, data);
+  // capture an image every second
+  setInterval(() => {
+    const currentDate = new Date();
+
+    const filename = `${currentDate.toISOString()}.jpg`;
+    const filePath = join(captureDirectory, filename);
+    const lastFramePath = join(publicCaptureDirectory, "last.jpg");
+
+    webcam.capture(join(captureDirectory, filename), (error, data) => {
+      // handle error
+      if (error) {
+        console.log("capturing failed", error, data);
+
+        return;
+      }
+
+      // copy the last frame into a separate file with a known name
+      copyFile(filePath, lastFramePath).catch((error) => {
+        console.error("copying last frame file failed", error);
+      });
     });
   }, 1000);
 }

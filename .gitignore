@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 /.pnp
+/src/temp
+/public/capture
 .pnp.js
 
 # testing
