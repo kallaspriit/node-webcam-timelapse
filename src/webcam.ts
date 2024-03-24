@@ -1,4 +1,4 @@
-import { type WebcamOptions, create } from "node-webcam";
+import { type WebcamOptions, create, list } from "node-webcam";
 import { copyFile } from "fs/promises";
 import { join } from "path";
 import { getFlashDrivePath } from "./util/getFlashDrivePath";
@@ -9,6 +9,7 @@ import {
   getCaptureInterval,
 } from "./util/getCaptureInterval";
 import { formatDuration } from "./util/formatDuration";
+import { formatDatetime } from "./util/formatDatetime";
 
 export function startWebcamCapture() {
   // options used to capture the webcam
@@ -17,11 +18,11 @@ export function startWebcamCapture() {
     height: 1080,
     quality: 90,
     output: "jpeg",
+    device: "/dev/video2",
     // callbackReturn: "location",
     // frames: 60,
     // delay: 0,
     // saveShots: true,
-    // device: "/dev/video0",
     // verbose: false,
   };
 
@@ -34,6 +35,8 @@ export function startWebcamCapture() {
 
   // calculate the capture interval based on the capture options
   const captureInterval = getCaptureInterval(captureOptions);
+
+  // const availableCameras = list();
 
   // create webcam
   const webcam = create(webcamOptions);
@@ -62,7 +65,7 @@ export function startWebcamCapture() {
     // create the capture path if needed (includes current date that changes)
     ensurePathExists(captureDirectory);
 
-    const filename = `${currentTime.toISOString()}.jpg`;
+    const filename = `${formatDatetime(currentTime, true)}.jpg`;
     const captureFilePath = join(captureDirectory, filename);
 
     // capture to last frame file
