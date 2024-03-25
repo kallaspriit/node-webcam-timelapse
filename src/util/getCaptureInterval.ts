@@ -1,4 +1,4 @@
-export interface GetCaptureIntervalOptions {
+export interface CaptureIntervalOptions {
   sequenceDurationSeconds: number;
   outputDurationDurationSeconds: number;
   fps: number;
@@ -7,14 +7,14 @@ export interface GetCaptureIntervalOptions {
 /**
  * Get the interval in milliseconds to capture an image.
  *
- * @param {GetCaptureIntervalOptions} options
+ * @param {CaptureIntervalOptions} options
  * @returns {number}
  */
 export function getCaptureInterval({
   sequenceDurationSeconds,
   outputDurationDurationSeconds,
   fps,
-}: GetCaptureIntervalOptions): number {
+}: CaptureIntervalOptions): number {
   const totalFrames = outputDurationDurationSeconds * fps;
   const captureInterval = (sequenceDurationSeconds * 1000) / totalFrames;
 

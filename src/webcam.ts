@@ -5,11 +5,12 @@ import { getFlashDrivePath } from "./util/getFlashDrivePath";
 import { formatDate } from "./util/formatDate";
 import { ensurePathExists } from "./util/ensurePathExists";
 import {
-  type GetCaptureIntervalOptions,
+  type CaptureIntervalOptions,
   getCaptureInterval,
 } from "./util/getCaptureInterval";
 import { formatDuration } from "./util/formatDuration";
 import { formatDatetime } from "./util/formatDatetime";
+import { CaptureFrameOptions, captureFrame } from "./util/captureFrame";
 
 export function startWebcamCapture() {
   // options used to capture the webcam
@@ -27,7 +28,7 @@ export function startWebcamCapture() {
   };
 
   // options used to calculate appopriate capture interval
-  const captureOptions: GetCaptureIntervalOptions = {
+  const captureOptions: CaptureIntervalOptions = {
     sequenceDurationSeconds: 24 * 60 * 60, // this amount of time
     outputDurationDurationSeconds: 60, // maps to this many seconds
     fps: 60, // given this many frames per second
@@ -39,74 +40,29 @@ export function startWebcamCapture() {
   // const availableCameras = list();
 
   // create webcam
-  const webcam = create(webcamOptions);
+  const webcam = create({
+    ...webcamOptions,
+    platform: 'fswebcam'
+  });
 
   const flashDrivePath = getFlashDrivePath();
 
   // prefer flash drive but fallback to local directory
   const projectPath = join(__dirname, "..", "..");
-  const publicDirectory = join(projectPath, "public");
-  const lastFramePath = join(publicDirectory, "last.jpg");
+  const localCapturePath = join(projectPath, "public");
+  const lastFramePath = join(localCapturePath, "last.jpg");
 
   // captures a frame and stores it in the capture directory and last frame
-  const captureFrame = () => {
-    const currentTime = new Date();
-    const currentDatePath = formatDate(currentTime);
-    const localCaptureDirectory = join(
-      projectPath,
-      "public",
-      "capture",
-      currentDatePath,
-    );
-    const captureDirectory = flashDrivePath
-      ? join(flashDrivePath, currentDatePath)
-      : localCaptureDirectory;
-
-    // create the capture path if needed (includes current date that changes)
-    ensurePathExists(captureDirectory);
-
-    const filename = `${formatDatetime(currentTime, true)}.jpg`;
-    const captureFilePath = join(captureDirectory, filename);
-
-    // capture to last frame file
-    webcam.capture(lastFramePath, (error, _capturedFilePath) => {
-      // handle error
-      if (error) {
-        console.error("Capturing failed", error, _capturedFilePath);
-
-        return;
-      }
-
-      console.log(
-        `Captured frame '${captureFilePath}', next in ${formatDuration(captureInterval / 1000)}`,
-      );
-
-      // copy the last frame onto capture directory (prefer flash drive)
-      copyFile(lastFramePath, captureFilePath).catch((error) => {
-        console.error(
-          `Copying last to '${captureFilePath}' frame file failed`,
-          error,
-        );
-      });
+  const captureNextFrame = (extraOptions: Partial<CaptureFrameOptions> = {}) => {
+    captureFrame({
+      webcam,
+      flashDrivePath,
+      localCapturePath,
+      lastFramePath,
+      captureInterval,
+      ...extraOptions,
     });
   };
-
-  // updates just the last frame file, this is called more often to provide live view
-  // const updateLastFrame = () => {
-  //   const projectPath = join(__dirname, "..", "..");
-  //   const publicDirectory = join(projectPath, "public");
-  //   const lastFramePath = join(publicDirectory, "last.jpg");
-
-  //   // capture to last frame file
-  //   webcam.capture(lastFramePath, (error, _capturedFilePath) => {
-  //     // handle error
-  //     if (error) {
-  //       console.error("Capturing last frame failed", error, _capturedFilePath);
-
-  //       return;
-  //     }
-  //   });
-  // };
 
   // log the capture settings
   console.log("\n-- Starting webcam capture --");
@@ -123,12 +79,12 @@ export function startWebcamCapture() {
   console.log(`- last frame is stored in '${lastFramePath}'\n`);
 
   // capture an image at interval
-  setInterval(captureFrame, captureInterval);
+  setInterval(captureNextFrame, captureInterval);
 
   // TODO: ideally only do this if the web ui is open
   // update the last frame more often to provide a live view
-  // setInterval(updateLastFrame, 1000);
+  setInterval(() => captureNextFrame({ updateLastFrameOnly: true }), 1000);
 
   // capture the first frame immediately
-  captureFrame();
+  captureNextFrame();
 }
