@@ -11,7 +11,6 @@ export interface CaptureFrameOptions {
   flashDrivePath: string | null;
   localCapturePath: string;
   lastFramePath: string;
-  captureInterval: number;
   updateLastFrameOnly?: boolean;
 }
 
@@ -20,7 +19,6 @@ export function captureFrame({
   flashDrivePath,
   localCapturePath,
   lastFramePath,
-  captureInterval,
   updateLastFrameOnly,
 }: CaptureFrameOptions) {
   const currentTime = new Date();
@@ -47,9 +45,7 @@ export function captureFrame({
 
     // copy the last frame into capture directory
     if (updateLastFrameOnly !== true) {
-      console.log(
-        `Captured frame '${captureFilePath}', next in ${formatDuration(captureInterval / 1000)}`,
-      );
+      console.log(`Captured frame '${captureFilePath}'`);
 
       copyFile(lastFramePath, captureFilePath).catch((error) => {
         console.error(
