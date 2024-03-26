@@ -7,7 +7,7 @@ export interface ModalProps {
   title: React.ReactNode;
   footer: React.ReactNode;
   children: React.ReactNode;
-  onClose: () => void;
+  onClose: VoidFunction;
 }
 
 export const Modal: React.FC<ModalProps> = ({

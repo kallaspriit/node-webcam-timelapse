@@ -1,10 +1,10 @@
 import { copyFile } from "fs/promises";
 import { FSWebcam } from "node-webcam";
 import { join } from "path";
-import { ensurePathExists } from "./ensurePathExists";
-import { formatDate } from "./formatDate";
-import { formatDatetime } from "./formatDatetime";
-import { formatDuration } from "./formatDuration";
+import { ensurePathExists } from "@/util/ensurePathExists";
+import { formatDate } from "@/util/formatDate";
+import { formatDatetime } from "@/util/formatDatetime";
+import { formatDuration } from "@/util/formatDuration";
 
 export interface CaptureFrameOptions {
   webcam: FSWebcam;
