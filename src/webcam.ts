@@ -1,12 +1,7 @@
-import { type WebcamOptions, create } from "node-webcam";
-import { join } from "path";
-import { getFlashDrivePath } from "@/util/getFlashDrivePath";
+import { create } from "node-webcam";
 import { formatDuration } from "@/util/formatDuration";
-import { CaptureFrameOptions, captureFrame } from "@/util/captureFrame";
-import {
-  CaptureIntervalOptions,
-  setCaptureInterval,
-} from "@/util/setCaptureInterval";
+import { type CaptureFrameOptions, captureFrame } from "@/util/captureFrame";
+import { setCaptureInterval } from "@/util/setCaptureInterval";
 import { config } from "@/config";
 
 export function startWebcamCapture() {
@@ -54,7 +49,7 @@ export function startWebcamCapture() {
 
   // TODO: ideally only do this if the web ui is open
   // update the last frame more often to provide a live view
-  setInterval(() => captureNextFrame({ updateLastFrameOnly: true }), 1000);
+  // setInterval(() => captureNextFrame({ updateLastFrameOnly: true }), 1000);
 
   // capture the first frame immediately
   captureNextFrame();

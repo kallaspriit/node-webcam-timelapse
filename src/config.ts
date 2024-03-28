@@ -1,5 +1,5 @@
-import { WebcamOptions } from "node-webcam";
-import { CaptureIntervalOptions } from "./util/setCaptureInterval";
+import { type WebcamOptions } from "node-webcam";
+import { type CaptureIntervalOptions } from "./util/setCaptureInterval";
 import { join } from "path";
 import { getFlashDrivePath } from "./util/getFlashDrivePath";
 
@@ -24,7 +24,7 @@ export const config: Config = {
     height: 1080,
     quality: 90,
     output: "jpeg",
-    device: "/dev/video2",
+    // device: "/dev/video2",
     // callbackReturn: "location",
     // frames: 60,
     // delay: 0,
