@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
             ✕
           </button>
         </div>
-        <div className="px-5 py-10">{children}</div>
+        <div className="px-5 py-10 overflow-y-auto max-h-[60vh]">{children}</div>
         <div className="border-t border-neutral-200 px-5 py-4">{footer}</div>
       </div>
     </div>,

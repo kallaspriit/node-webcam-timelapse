@@ -7,24 +7,20 @@ import { formatDatetime } from "@/util/formatDatetime";
 
 export interface CaptureFrameOptions {
   webcam: FSWebcam;
-  flashDrivePath: string | null;
-  localCapturePath: string;
+  captureBasePath: string;
   lastFramePath: string;
   updateLastFrameOnly?: boolean;
 }
 
 export function captureFrame({
   webcam,
-  flashDrivePath,
-  localCapturePath,
+  captureBasePath,
   lastFramePath,
   updateLastFrameOnly,
 }: CaptureFrameOptions) {
   const currentTime = new Date();
   const currentDateDirectory = formatDate(currentTime);
-  const capturePath = flashDrivePath
-    ? join(flashDrivePath, currentDateDirectory)
-    : join(localCapturePath, currentDateDirectory);
+  const capturePath = join(captureBasePath, currentDateDirectory);
 
   // create the capture path if needed (includes current date that changes)
   ensurePathExists(capturePath);

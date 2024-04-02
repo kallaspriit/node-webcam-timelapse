@@ -1,5 +1,5 @@
 import React, { type ButtonHTMLAttributes } from "react";
-import cx from "classnames";
+import classNames from "classnames";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   secondary?: boolean;
@@ -13,7 +13,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={cx(
+      className={classNames(
         "rounded-md border px-4 py-2",
         !secondary && "border-sky-600 bg-sky-600 text-white",
         secondary && "border-sky-600 bg-transparent text-sky-600",

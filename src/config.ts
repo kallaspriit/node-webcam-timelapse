@@ -9,12 +9,14 @@ export interface Config {
   projectPath: string;
   localCapturePath: string;
   flashDrivePath: string | null;
+  captureBasePath: string;
   lastFramePath: string;
 }
 
 const projectPath = join(__dirname, "..", "..");
 const localCapturePath = join(projectPath, "public");
 const flashDrivePath = getFlashDrivePath();
+const captureBasePath = flashDrivePath ?? localCapturePath;
 const lastFramePath = join(localCapturePath, "last.jpg");
 
 export const config: Config = {
@@ -44,5 +46,6 @@ export const config: Config = {
   projectPath,
   localCapturePath,
   flashDrivePath,
+  captureBasePath,
   lastFramePath,
 };

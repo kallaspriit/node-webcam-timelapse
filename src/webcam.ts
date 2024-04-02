@@ -17,8 +17,7 @@ export function startWebcamCapture() {
   ) => {
     captureFrame({
       webcam,
-      flashDrivePath: config.flashDrivePath,
-      localCapturePath: config.localCapturePath,
+      captureBasePath: config.captureBasePath,
       lastFramePath: config.lastFramePath,
       ...extraOptions,
     });

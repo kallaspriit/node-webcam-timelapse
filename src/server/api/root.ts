@@ -1,4 +1,4 @@
-import { timelapseRouter } from "@/server/api/routers/timelapse";
+import { timelapseRouter } from "@/server/api/routers/timelapseRouter";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**

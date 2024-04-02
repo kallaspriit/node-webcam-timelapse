@@ -3,7 +3,7 @@
 
 import useInterval from "@/hooks/useInterval";
 import { useState, type FC } from "react";
-import cx from "classnames";
+import classNames from "classnames";
 
 /**
  * Periodically shows the latest captured frame from the webcam.
@@ -33,7 +33,7 @@ export const LatestFrame: FC = () => {
       {/* Bottom image */}
       <img
         key={`bottom-${bottomKey}`}
-        className={cx("absolute inset-0 rounded-xl", {
+        className={classNames("absolute inset-0 rounded-xl", {
           "z-0": imageIndex === 1,
           "z-10": imageIndex === 0,
         })}
@@ -45,7 +45,7 @@ export const LatestFrame: FC = () => {
       {/* Top image */}
       <img
         key={`top-${topKey}`}
-        className={cx("absolute inset-0 rounded-xl", {
+        className={classNames("absolute inset-0 rounded-xl", {
           "z-0": imageIndex === 0,
           "z-10": imageIndex === 1,
         })}
