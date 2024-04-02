@@ -6,6 +6,16 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
+    webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+        config.plugins.push(
+          new webpack.DefinePlugin({
+            'process.env.FLUENTFFMPEG_COV': false
+        })
+        )
+     
+        return config
+      },
+
     experimental: {
         instrumentationHook: true
     }

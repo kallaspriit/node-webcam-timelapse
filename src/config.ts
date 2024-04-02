@@ -2,22 +2,27 @@ import { type WebcamOptions } from "node-webcam";
 import { type CaptureIntervalOptions } from "./util/setCaptureInterval";
 import { join } from "path";
 import { getFlashDrivePath } from "./util/getFlashDrivePath";
+import { ensurePathExists } from "@/util/ensurePathExists";
 
 export interface Config {
   webcam: WebcamOptions;
   capture: CaptureIntervalOptions;
   projectPath: string;
-  localCapturePath: string;
+  publicPath: string;
   flashDrivePath: string | null;
   captureBasePath: string;
+  outputPath: string;
   lastFramePath: string;
 }
 
 const projectPath = join(__dirname, "..", "..");
-const localCapturePath = join(projectPath, "public");
+const publicPath = join(projectPath, "public");
 const flashDrivePath = getFlashDrivePath();
-const captureBasePath = flashDrivePath ?? localCapturePath;
-const lastFramePath = join(localCapturePath, "last.jpg");
+const captureBasePath = flashDrivePath ?? publicPath;
+const outputPath = join(captureBasePath, "timelapse");
+const lastFramePath = join(publicPath, "last.jpg");
+
+ensurePathExists(outputPath);
 
 export const config: Config = {
   // options used to capture the webcam
@@ -44,8 +49,11 @@ export const config: Config = {
 
   // paths configuration
   projectPath,
-  localCapturePath,
+  publicPath,
   flashDrivePath,
   captureBasePath,
+  outputPath,
   lastFramePath,
 };
+
+console.log("config", config);
