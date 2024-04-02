@@ -23,7 +23,8 @@ export const timelapseRouter = createTRPCRouter({
     const { captureBasePath } = config;
     const daysPaths = glob.sync(`${captureBasePath}/*`);
 
-    await delay(5000);
+    // simulate network latency
+    // await delay(5000);
 
     return daysPaths
       .map((dayPath) => {
@@ -36,9 +37,11 @@ export const timelapseRouter = createTRPCRouter({
   }),
 
   createDayTimelapse: publicProcedure
-    .input(z.object({ folder: z.string().min(1) }))
-    .mutation(async ({ input }) => {
-      console.log("createDayTimelapse", input);
+    .input(z.object({ path: z.string().min(1) }))
+    .mutation(async ({ input: { path } }) => {
+      const pictures = glob.sync(`${path}/*.jpg`);
+
+      console.log("createDayTimelapse", { path, pictures });
 
       return true;
     }),

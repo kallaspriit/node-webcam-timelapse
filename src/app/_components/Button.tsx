@@ -8,6 +8,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button: React.FC<ButtonProps> = ({
   children,
   className,
+  disabled,
   secondary,
   ...rest
 }) => {
@@ -17,8 +18,10 @@ const Button: React.FC<ButtonProps> = ({
         "rounded-md border px-4 py-2",
         !secondary && "border-sky-600 bg-sky-600 text-white",
         secondary && "border-sky-600 bg-transparent text-sky-600",
+        disabled && "cursor-not-allowed opacity-50",
         className,
       )}
+      disabled={disabled}
       {...rest}
     >
       {children}
