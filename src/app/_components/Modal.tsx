@@ -1,9 +1,11 @@
+import { Spinner } from "@/app/_components/Spinner";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 
 export interface ModalProps {
   visible: boolean;
+  loading: boolean;
   title: React.ReactNode;
   footer: React.ReactNode;
   children: React.ReactNode;
@@ -12,6 +14,7 @@ export interface ModalProps {
 
 export const Modal: React.FC<ModalProps> = ({
   visible,
+  loading,
   title,
   footer,
   children,
@@ -55,7 +58,10 @@ export const Modal: React.FC<ModalProps> = ({
             ✕
           </button>
         </div>
-        <div className="px-5 py-10 overflow-y-auto max-h-[60vh]">{children}</div>
+        <div className="max-h-[60vh] overflow-y-auto px-5 py-10">
+          {children}
+          {loading && <Spinner cover />}
+        </div>
         <div className="border-t border-neutral-200 px-5 py-4">{footer}</div>
       </div>
     </div>,

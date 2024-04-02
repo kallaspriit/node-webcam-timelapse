@@ -3,6 +3,7 @@ import { config } from "@/config";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { glob } from "glob";
+import { delay } from "@/util/delay";
 
 export const timelapseRouter = createTRPCRouter({
   // hello: publicProcedure
@@ -22,7 +23,7 @@ export const timelapseRouter = createTRPCRouter({
     const { captureBasePath } = config;
     const daysPaths = glob.sync(`${captureBasePath}/*`);
 
-    console.log("getCaptureFolders", { daysPaths });
+    await delay(5000);
 
     return daysPaths
       .map((dayPath) => {
