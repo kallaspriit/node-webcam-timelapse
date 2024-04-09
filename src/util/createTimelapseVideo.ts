@@ -15,17 +15,19 @@ export function createTimelapseVideo({
   images,
   filename,
 }: CreateTimelapseVideoOptions) {
-  const { publicPath } = config;
-
-  const outputFilename = join(publicPath, filename);
-
-  console.log("Creating timelapse video", { images, filename, outputFilename });
+  console.log("Creating timelapse video", {
+    imagesLength: images.length,
+    filename,
+    config,
+  });
 
   const command = FfmpegCommand()
     .fps(60)
     .outputFormat("mp4")
     .size("1920x1080")
-    .videoCodec("libx264");
+    .videoCodec("libx264")
+    .inputFormat("image2")
+    .addOptions(["-pix_fmt yuv420p"]);
 
   images.forEach((image) => {
     command.addInput(image);
@@ -34,7 +36,12 @@ export function createTimelapseVideo({
   return new Promise<TimelapseResult>((resolve, reject) => {
     command
       .on("start", (commandLine) => {
-        console.log("Spawned Ffmpeg with command: " + commandLine);
+        console.log(
+          "Spawned Ffmpeg with command: " +
+            commandLine.substring(0, 100) +
+            "..." +
+            commandLine.substring(commandLine.length - 100),
+        );
       })
       .on("progress", (progress) => {
         console.log("Processing: " + progress.percent + "% done");
@@ -44,14 +51,15 @@ export function createTimelapseVideo({
 
         resolve({ filename });
       })
-      .on("stderr", (stderrLine) => {
-        console.log("Stderr output: " + stderrLine);
-      })
+      // .on("stderr", (stderrLine) => {
+      //   console.log("Stderr output: " + stderrLine);
+      // })
       .on("error", (error) => {
         console.error("Error processing video", error);
 
         reject(error);
       })
-      .save(outputFilename);
+      .output(filename)
+      .run();
   });
 }

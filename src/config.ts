@@ -12,7 +12,7 @@ export interface Config {
   flashDrivePath: string | null;
   captureBasePath: string;
   outputPath: string;
-  lastFramePath: string;
+  lastFrameFilename: string;
 }
 
 const projectPath = join(__dirname, "..", "..");
@@ -20,8 +20,9 @@ const publicPath = join(projectPath, "public");
 const flashDrivePath = getFlashDrivePath();
 const captureBasePath = flashDrivePath ?? publicPath;
 const outputPath = join(captureBasePath, "timelapse");
-const lastFramePath = join(publicPath, "last.jpg");
+const lastFrameFilename = join(publicPath, "last.jpg");
 
+ensurePathExists(captureBasePath);
 ensurePathExists(outputPath);
 
 export const config: Config = {
@@ -53,7 +54,7 @@ export const config: Config = {
   flashDrivePath,
   captureBasePath,
   outputPath,
-  lastFramePath,
+  lastFrameFilename,
 };
 
 console.log("config", config);

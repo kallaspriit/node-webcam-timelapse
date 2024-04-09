@@ -18,7 +18,7 @@ export function startWebcamCapture() {
     captureFrame({
       webcam,
       captureBasePath: config.captureBasePath,
-      lastFramePath: config.lastFramePath,
+      lastFrameFilename: config.lastFrameFilename,
       ...extraOptions,
     });
   };
@@ -44,7 +44,7 @@ export function startWebcamCapture() {
   console.log(
     `- images per sequence: ${Math.round(capture.outputDurationSeconds * capture.fps)}`,
   );
-  console.log(`- last frame is stored in '${config.lastFramePath}'\n`);
+  console.log(`- last frame is stored in '${config.lastFrameFilename}'\n`);
 
   // TODO: ideally only do this if the web ui is open
   // update the last frame more often to provide a live view

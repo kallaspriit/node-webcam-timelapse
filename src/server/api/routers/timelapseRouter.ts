@@ -5,6 +5,7 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { glob } from "glob";
 import { delay } from "@/util/delay";
 import { createTimelapseVideo } from "@/util/createTimelapseVideo";
+import { join } from "path";
 
 export const timelapseRouter = createTRPCRouter({
   // hello: publicProcedure
@@ -41,13 +42,19 @@ export const timelapseRouter = createTRPCRouter({
   createDayTimelapse: publicProcedure
     .input(z.object({ path: z.string().min(1) }))
     .mutation(async ({ input: { path } }) => {
+      const { outputPath } = config;
       const images = glob.sync(`${path}/*.jpg`);
+      const filename = join(outputPath, "timelapse.mp4");
 
-      console.log("createDayTimelapse", { path, images });
+      console.log("createDayTimelapse", {
+        path,
+        imageCount: images.length,
+        filename,
+      });
 
       return createTimelapseVideo({
         images,
-        filename: "timelapse.mp4",
+        filename,
       });
     }),
 

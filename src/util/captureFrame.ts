@@ -8,14 +8,14 @@ import { formatDatetime } from "@/util/formatDatetime";
 export interface CaptureFrameOptions {
   webcam: FSWebcam;
   captureBasePath: string;
-  lastFramePath: string;
+  lastFrameFilename: string;
   updateLastFrameOnly?: boolean;
 }
 
 export function captureFrame({
   webcam,
   captureBasePath,
-  lastFramePath,
+  lastFrameFilename,
   updateLastFrameOnly,
 }: CaptureFrameOptions) {
   const currentTime = new Date();
@@ -30,7 +30,7 @@ export function captureFrame({
   const captureFilePath = join(capturePath, filename);
 
   // capture to last frame file
-  webcam.capture(lastFramePath, (error, _capturedFilePath) => {
+  webcam.capture(lastFrameFilename, (error, _capturedFilePath) => {
     // handle error
     if (error) {
       console.error("Capturing failed", error, _capturedFilePath);
@@ -42,7 +42,7 @@ export function captureFrame({
     if (updateLastFrameOnly !== true) {
       console.log(`Captured frame '${captureFilePath}'`);
 
-      copyFile(lastFramePath, captureFilePath).catch((error) => {
+      copyFile(lastFrameFilename, captureFilePath).catch((error) => {
         console.error(
           `Copying last to '${captureFilePath}' frame file failed`,
           error,
