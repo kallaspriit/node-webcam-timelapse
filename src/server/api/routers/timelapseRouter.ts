@@ -43,17 +43,16 @@ export const timelapseRouter = createTRPCRouter({
     .input(z.object({ path: z.string().min(1) }))
     .mutation(async ({ input: { path } }) => {
       const { outputPath } = config;
-      const images = glob.sync(`${path}/*.jpg`);
+      // const images = glob.sync(`${path}/*.jpg`);
       const filename = join(outputPath, "timelapse.mp4");
 
       console.log("createDayTimelapse", {
         path,
-        imageCount: images.length,
         filename,
       });
 
       return createTimelapseVideo({
-        images,
+        sourcePath: path,
         filename,
       });
     }),

@@ -1,4 +1,4 @@
-import { create } from "node-webcam";
+import { create, CameraControl, CameraUtils } from "node-webcam";
 import { formatDuration } from "@/util/formatDuration";
 import { type CaptureFrameOptions, captureFrame } from "@/util/captureFrame";
 import { setCaptureInterval } from "@/util/setCaptureInterval";
@@ -9,6 +9,10 @@ export function startWebcamCapture() {
   const webcam = create({
     ...config.webcam,
     platform: "fswebcam",
+  });
+
+  webcam.list((cameras) => {
+    console.log("cameras", cameras);
   });
 
   // captures a frame and stores it in the capture directory and last frame

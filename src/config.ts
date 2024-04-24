@@ -32,7 +32,8 @@ export const config: Config = {
     height: 1080,
     quality: 90,
     output: "jpeg",
-    // device: "/dev/video2",
+    // TODO: automatically choose largest available videoN device
+    device: "/dev/video2",
     // callbackReturn: "location",
     // frames: 60,
     // delay: 0,
@@ -43,7 +44,7 @@ export const config: Config = {
   // options used to calculate appopriate capture interval
   capture: {
     startHours: 7, // start capturing at this hour
-    endHours: 20, // stop capturing at this hour
+    endHours: 21, // stop capturing at this hour
     outputDurationSeconds: 60, // maps to this many seconds
     fps: 60, // given this many frames per second
   },
